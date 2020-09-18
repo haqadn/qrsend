@@ -7,8 +7,9 @@ var names = {};
 
 app.use(express.static('dist'));
 
-http.listen(80, () => {
-  console.log('listening on *:80');
+const port = process.env.PORT || 3000
+http.listen(port, () => {
+  console.log('listening on *:'+port);
 });
 
 
