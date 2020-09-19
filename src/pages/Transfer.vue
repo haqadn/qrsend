@@ -25,6 +25,7 @@
                       @keyup.alt.enter="sendMessage"
                       hint="Alt+Enter to send"
               ></v-textarea>
+              <v-file-input show-size label="File input" v-model="newFile"></v-file-input>
               <v-btn class="mt-2" color="primary" type="submit">Send</v-btn>
             </form>
           </div>
@@ -39,6 +40,13 @@
               <v-list-item-content>
                 <v-list-item-title>{{ message.sender }}</v-list-item-title>
                 <v-list-item-subtitle class="text--style-pre">{{ message.text }}</v-list-item-subtitle>
+
+                <v-list-item-subtitle>
+                  <v-btn dark color="blue-grey" :href="getDownloadLink(message.attachment)" target="_blank" :download="message.attachment.name">
+                    <v-icon color="grey lighten-1">fas fa-download</v-icon>
+                    {{message.attachment.name}}
+                  </v-btn>
+                </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-card>
@@ -49,8 +57,9 @@
 </template>
 
 <script>
-import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
-import VueQrcode from 'vue-qrcode'
+import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator';
+import VueQrcode from 'vue-qrcode';
+import mime from 'mime';
 
 export default {
   components: {
@@ -64,7 +73,7 @@ export default {
     presence: {
       count: 1,
       users: []
-    },
+    }
   }),
   sockets: {
     connect: function () {
@@ -84,8 +93,18 @@ export default {
   },
   methods: {
     sendMessage() {
-      if(this.newMessage === '') return;
-      this.$socket.emit('message', this.newMessage);
+      if(this.newMessage === '' && this.newFile === null) return;
+      this.$socket.emit('message', {
+        text: this.newMessage,
+        attachment: this.newFile === null ? null : {
+          name: this.newFile.name,
+          size: this.newFile.size,
+          data: this.newFile,
+          type: mime.getType(this.newFile.name)
+        }
+      });
+
+      this.newFile = null;
       this.newMessage = '';
     },
     generateName() {
@@ -94,6 +113,10 @@ export default {
         style: 'capital',
         separator: ' '
       });
+    },
+    getDownloadLink(attachment) {
+      let blob = new Blob([attachment.data], {type: attachment.type});
+      return URL.createObjectURL(blob);
     }
   },
   computed: {

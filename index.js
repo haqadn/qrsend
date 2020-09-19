@@ -14,11 +14,11 @@ http.listen(port, () => {
 
 
 io.on('connection', (socket) => {
-  socket.on('message', (text) => {
+  socket.on('message', (message) => {
     const room = getRoom(socket);
 
     if(room) {
-      io.to(room).emit('message', {sender: names[socket.id], text});
+      io.to(room).emit('message', {sender: names[socket.id], ...message});
     }
   });
 
