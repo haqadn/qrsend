@@ -4,6 +4,7 @@ import App from './App.vue'
 import Transfer from './pages/Transfer.vue'
 import VueSocketIO from 'vue-socket.io'
 import { v4 as uuidv4 } from 'uuid';
+import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false;
 Vue.use(new VueSocketIO({
@@ -22,5 +23,6 @@ const router = new VueRouter({
 
 new Vue({
   render: h => h(App),
+  vuetify,
   router
 }).$mount('#app');

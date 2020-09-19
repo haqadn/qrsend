@@ -7,18 +7,18 @@ var names = {};
 
 app.use(express.static('dist'));
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 http.listen(port, () => {
   console.log('listening on *:'+port);
 });
 
 
 io.on('connection', (socket) => {
-  socket.on('message', (message) => {
+  socket.on('message', (text) => {
     const room = getRoom(socket);
 
     if(room) {
-      io.to(room).emit('message', message);
+      io.to(room).emit('message', {sender: names[socket.id], text});
     }
   });
 
