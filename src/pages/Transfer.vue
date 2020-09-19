@@ -14,23 +14,31 @@
           </v-card>
         </v-col>
         <v-col>
-          <template v-if="presence.count > 0">
-            <h1>Share </h1>
+          <div v-if="presence.count > 1" class="mb-5">
+            <h1>Type and send!</h1>
             <form @submit.prevent="sendMessage">
-              <v-textarea rows="1" v-model="newMessage"></v-textarea>
-              <v-btn color="primary" type="submit">Send</v-btn>
+              <v-textarea
+                      auto-grow
+                      autofocus
+                      rows="1"
+                      v-model="newMessage"
+                      @keyup.alt.enter="sendMessage"
+                      hint="Alt+Enter to send"
+              ></v-textarea>
+              <v-btn class="mt-2" color="primary" type="submit">Send</v-btn>
             </form>
-          </template>
+          </div>
 
           <v-card
                   v-if="messages.length"
-                  class="mx-auto mt-5"
+                  class="mx-auto"
                   tile
           >
+            <v-card-title>Messages</v-card-title>
             <v-list-item two-line v-for="(message, i) in messages" :key="i">
               <v-list-item-content>
                 <v-list-item-title>{{ message.sender }}</v-list-item-title>
-                <v-list-item-subtitle>{{ message.text }}</v-list-item-subtitle>
+                <v-list-item-subtitle class="text--style-pre">{{ message.text }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-card>
@@ -48,7 +56,6 @@ export default {
   components: {
     VueQrcode,
   },
-  el: '#app',
   data: () => ({
     newMessage: '',
     messages: [],
@@ -104,5 +111,9 @@ export default {
   .qr-container img {
     max-width: calc( 100% - 40px);
     margin: 20px;
+  }
+
+  .text--style-pre {
+    white-space: pre !important;
   }
 </style>
