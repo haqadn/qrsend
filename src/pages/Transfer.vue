@@ -2,7 +2,7 @@
   <div class="container my-5" id="app">
     <v-container>
       <v-row>
-        <v-col md="4" :offset-md="messages.length === 0 && presence.count <= 1 ? 4 : 0">
+        <v-col cols="12" sm="4" :offset-md="messages.length === 0 && presence.count <= 1 ? 4 : 0">
           <v-card v-if="presence.count <= 1" class="qr-container" dark color="#303f9f">
             <vue-qrcode :value="url" :scale="20"></vue-qrcode>
             <v-card-title class="headline">Scan this code to start sharing</v-card-title>
@@ -13,7 +13,7 @@
             <v-card-subtitle>You are connected with {{ connectedDevices }}</v-card-subtitle>
           </v-card>
         </v-col>
-        <v-col>
+        <v-col cols="12" sm="8">
           <div v-if="presence.count > 1" class="mb-5">
             <h1>Type and send!</h1>
             <form @submit.prevent="sendMessage">
