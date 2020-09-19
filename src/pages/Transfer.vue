@@ -94,7 +94,7 @@ export default {
   methods: {
     sendMessage() {
       if(this.newMessage === '' && this.newFile === null) return;
-      this.$socket.emit('message', {
+      let message = {
         text: this.newMessage,
         attachment: this.newFile === null ? null : {
           name: this.newFile.name,
@@ -102,7 +102,10 @@ export default {
           data: this.newFile,
           type: mime.getType(this.newFile.name)
         }
-      });
+      };
+      this.$socket.emit('message', message);
+
+      this.messages.unshift({...message, sender: this.name});
 
       this.newFile = null;
       this.newMessage = '';

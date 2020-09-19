@@ -18,7 +18,7 @@ io.on('connection', (socket) => {
     const room = getRoom(socket);
 
     if(room) {
-      io.to(room).emit('message', {sender: names[socket.id], ...message});
+      socket.binary(message.attachment !== null).to(room).emit('message', {sender: names[socket.id], ...message});
     }
   });
 
