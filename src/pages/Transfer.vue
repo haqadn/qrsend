@@ -36,12 +36,13 @@
                   tile
           >
             <v-card-title>Messages</v-card-title>
+            <v-progress-linear v-if="binaryComing" value="15"></v-progress-linear>
             <v-list-item two-line v-for="(message, i) in messages" :key="i">
               <v-list-item-content>
                 <v-list-item-title>{{ message.sender }}</v-list-item-title>
                 <v-list-item-subtitle class="text--style-pre">{{ message.text }}</v-list-item-subtitle>
 
-                <v-list-item-subtitle>
+                <v-list-item-subtitle v-if="message.attachment !== null">
                   <v-btn dark color="blue-grey" :href="getDownloadLink(message.attachment)" target="_blank" :download="message.attachment.name">
                     <v-icon color="grey lighten-1">fas fa-download</v-icon>
                     {{message.attachment.name}}
@@ -73,7 +74,8 @@ export default {
     presence: {
       count: 1,
       users: []
-    }
+    },
+    binaryComing: false
   }),
   sockets: {
     connect: function () {
@@ -89,6 +91,9 @@ export default {
     },
     presence: function (presence) {
       this.presence = presence;
+    },
+    binaryComing: function (status) {
+      this.binaryComing = status;
     }
   },
   methods: {
@@ -118,6 +123,7 @@ export default {
       });
     },
     getDownloadLink(attachment) {
+      if(attachment === null) return '';
       let blob = new Blob([attachment.data], {type: attachment.type});
       return URL.createObjectURL(blob);
     }

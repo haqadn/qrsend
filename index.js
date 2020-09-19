@@ -18,7 +18,14 @@ io.on('connection', (socket) => {
     const room = getRoom(socket);
 
     if(room) {
-      socket.binary(message.attachment !== null).to(room).emit('message', {sender: names[socket.id], ...message});
+      const isBinary = message.attachment !== null;
+      if(isBinary) {
+        socket.emit('binaryComing', true);
+      }
+      socket.binary(isBinary).to(room).emit('message', {sender: names[socket.id], ...message});
+      if(isBinary) {
+        socket.emit('binaryComing', false);
+      }
     }
   });
 
